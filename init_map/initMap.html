@@ -11,9 +11,11 @@
     <div id="map"></div>
     <script>
         let map;
-        var nyc = new google.maps.LatLng(40.713814570931376, -74.00141122412474);
+        var nyc;
         var mcdon_circles = [];
     function initMap() {
+      nyc = new google.maps.LatLng(40.713814570931376, -74.00141122412474);
+     
       var options = {
         center: nyc,
         zoom: 14,
