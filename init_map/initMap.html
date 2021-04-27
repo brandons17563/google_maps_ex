@@ -11,9 +11,11 @@
     <div id="map"></div>
     <script>
         let map;
-        var nyc = new google.maps.LatLng(40.713814570931376, -74.00141122412474);
+        var nyc;
         var mcdon_circles = [];
     function initMap() {
+      nyc = new google.maps.LatLng(40.713814570931376, -74.00141122412474);//set our current position.
+     
       var options = {
         center: nyc,
         zoom: 14,
@@ -24,9 +26,9 @@
       map = new google.maps.Map(document.getElementById("map"), options);
       let input = document.getElementById("autocomplete");
       var autocomplete = new google.maps.places.Autocomplete(input,
-            {
-                bounds: nyc
-            }
+      {
+        bounds: new google.maps.LatLngBounds(nyc) //change searching range to new york.
+      }
       );
       var service = new google.maps.places.PlacesService(document.createElement('div'));
 
@@ -35,8 +37,8 @@
             var near_place=autocomplete.getPlace();
             if(near_place.hasOwnProperty('place_id'))
             {
-                result([near_place]);
-                console.log()
+                //result([near_place]);
+                console.log(near_place);
             }
             else{
                 let request = {
@@ -47,14 +49,15 @@
                 }
                 service.textSearch(request, function(results, status) {//its the name we type
                 if (status === google.maps.places.PlacesServiceStatus.OK) {
-                    result(results);
+                    //result(results);
+                    console.log(results);
                 }});
             }
         });
     }
     function result(mcdons)
     {
-      //Jackson part.
+      //Jackson part
     }
     </script>
 </body>
