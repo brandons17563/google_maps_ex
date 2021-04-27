@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8" />
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5u7uuBJOaYUXvQtyEMYuBgSplv0KO418&callback=initMap&libraries=drawing,&v=weekly"
+      async
+    ></script>
+</head>
+<body>
+    <div id="map"></div>
+
+    <script>
+    let map;
+
+    function initMap() {
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: 37.0902, lng: -95.7129  },
+        zoom: 5
+      }); 
+
+      // https://developers.google.com/maps/documentation/javascript/drawinglayer
+      const drawingManager = new google.maps.drawing.DrawingManager({
+       // drawingMode: google.maps.drawing.OverlayType.MARKER, --> sets first tool up
+        drawingControl: false, // changing to false will hide the menu
+        drawingControlOptions: {
+          position: google.maps.ControlPosition.TOP_CENTER, // location on screen
+          drawingModes: [ // which tools you want available
+            google.maps.drawing.OverlayType.MARKER,
+            google.maps.drawing.OverlayType.CIRCLE,
+            google.maps.drawing.OverlayType.POLYGON,
+            google.maps.drawing.OverlayType.POLYLINE,
+            google.maps.drawing.OverlayType.RECTANGLE,
+          ],
+        },
+        markerOptions: {
+          icon:
+            "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
+        },
+        circleOptions: {
+          fillColor: "#00ff00",
+          fillOpacity: 0.2,
+          strokeWeight: 5,
+          //clickable: true, only required for events
+          draggable: true,
+          editable: true,
+        },
+        polygonOptions: {
+          editable: true,
+        }
+      });
+      drawingManager.setMap(map);
+
+      // ------------- Sample data in USA --------------------------------- //
+      const big_ten_lat_lngs = [
+        {lat: 44.974747, lng: -93.235353}, 
+        {lat: 39.167222, lng: -86.521389}, 
+        {lat:43.07410237954239,lng: -89.40710326259544}, 
+        {lat: 41.662779916022956, lng: -91.55491272911948}, 
+        {lat: 40.82015598329164, lng: -96.7006908788802}, 
+        {lat: 40.42367270919296, lng: -86.92136626354699}, 
+        {lat:40.10199331179801, lng: -88.22716150217916}, 
+        {lat: 42.27811313794578, lng: -83.73784138807677}, 
+        {lat: 42.70187951733456, lng: -84.48217190210589}, 
+        {lat: 40.00668871534083, lng: -83.03026148313302}, 
+        {lat: 40.79822952311301, lng: -77.85991913099598}, 
+        {lat: 40.47902255772123, lng: -74.42501729238153}, 
+        {lat: 38.987093407013674, lng: -76.94203931807924}, 
+        {lat: 42.056451413210866, lng: -87.67507388307573}
+      ];
+      for(let i = 0; i < big_ten_lat_lngs.length; i++) {
+        var school_marker = new google.maps.Marker({
+          position: big_ten_lat_lngs[i]
+        }); 
+        school_marker.setMap(map);
+      }
+
+      const mn_circles = [
+        [{lat: 44.980121374361616, lng: -93.27282613579204}, 420324], 
+        [{lat:44.45965117908511, lng: -93.15863766719129}, 20347], 
+        [{lat: 44.05916608709716, lng: -92.4994773220016}, 115557], 
+        [{lat: 44.06975638532171, lng: -94.45206731354106}, 2628]
+      ]
+      for(let i = 0; i < mn_circles.length; i++) {
+        var mn_circle = new google.maps.Circle({
+          center: mn_circles[i][0],
+          radius: mn_circles[i][1] * 0.1
+        }); 
+        mn_circle.setMap(map);
+      }
+
+      const amTrakCoordinates = [
+        { lat: 34.05312223292026, lng: -118.24228647440452 },
+        { lat: 35.196283789422104, lng: -111.66892557757478 },
+        { lat: 35.13025221995824, lng: -106.6451137568569 },
+        { lat: 39.09767197046282, lng: -94.59461511689972 },
+      ];
+      const amTrakPath = new google.maps.Polyline({
+        path: amTrakCoordinates,
+        geodesic: true,
+        strokeColor: "#0000FF"
+      });
+      amTrakPath.setMap(map);
+      // ------------- END Sample data in USA ------------------------------ //
+
+      // ------------- Event sample in France ------------------------------ //
+      const eventCircle = new google.maps.Circle({
+        center: {lat: 46.676818748079725, lng: 2.6391383224586},
+        radius: 100000,
+        editable: true,
+        draggable: true,
+        clickable: true
+      });
+      eventCircle.setMap(map);
+
+      google.maps.event.addListener(eventCircle, 'radius_changed', function() {
+        console.log("New radius: " + eventCircle.getRadius());
+      });
+
+      // Note that dragging from the center dot fires the "center_changed" event instead
+      google.maps.event.addListener(eventCircle, 'dragend', function() {
+        console.log("New center: " + eventCircle.getCenter());
+      });
+
+      google.maps.event.addListener(eventCircle, 'rightclick', function() {
+        eventCircle.setMap(null);
+        console.log("Shape hidden!");
+      });
+      // ------------- END Event sample in France --------------------------- //
+
+      // ------------- Drawing manager event samples ------------------------ //
+      google.maps.event.addListener(drawingManager, 'overlaycomplete', function(shape) {
+        console.log("You made a " + shape.type + ". Nice job!");
+      });
+      google.maps.event.addListener(drawingManager, 'circlecomplete', function(circle) {
+        console.log("Circle centered at " + circle.getCenter() + " with radius " + circle.getRadius());
+      });
+      // ------------- END Drawing manager event samples --------------------- //
+
+  }
+    </script>
+</body>
+
+<style>
+/* Always set the map height explicitly to define the size of the div element that contains the map. */
+#map {
+  height: 100%;
+}
+
+/* Optional: Makes the sample page fill the window. */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+</style>
