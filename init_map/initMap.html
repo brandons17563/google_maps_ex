@@ -5,17 +5,47 @@
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5u7uuBJOaYUXvQtyEMYuBgSplv0KO418&callback=initMap"
       async
     ></script>
+    <script type="text/javascript" src = "styleTemplates.js"></script>
 </head>
 <body>
+    <div class="menu">
+      <select name="theme" id="theme" onchange="changeStyle()">
+        <option value="standard">Standard</option>
+        <option value="silver">Silver</option>
+        <option value="retro">Retro</option>
+        <option value="dark">Dark</option>
+        <option value="night">Night</option>
+        <option value="aubergine">Aubergine</option>
+      </select>
+      <select name="roadVisible" id="roadVisible" onchange="changeStyle()">
+        <option value="on">On</option>
+        <option value="simplified">Simplified</option>
+        <option value="off">Off</option>
+      </select>
+    </div>
+
     <div id="map"></div>
 
     <script>
         let map;
 
+        var stylesArray = [
+          {
+            featureType: '',
+            elementType: '',
+            stylers: [
+              {color: ''},
+              {visibility: ''},
+              // Add any stylers you need.
+            ]
+          },
+        ]
+
     function initMap() {
       var options = {
         center: { lat: -34.397, lng: 150.644 },
         zoom: 8,
+        styles: stylesArray
       }
 
       options.backgroundColor = "yellow"
@@ -32,6 +62,58 @@
         window.alert("Map was clicked!");
       });
     }
+
+    function changeStyle(){
+          var theme = document.getElementById("theme").value;
+          var roadVisible = document.getElementById("roadVisible").value;
+          var current_template = mapStyles[theme];
+          current_template = changeFeatureStyle(current_template, 'road', null, 'visibility', roadVisible);
+          map.setOptions(
+            {
+              styles: current_template
+            }
+          );
+        }
+
+        function changeFeatureStyle(template, featureType, elementType, attr, val){
+          let elementExists = false;
+          let propertyExists = false;
+          template.forEach(function(element) {
+            // if the feature and element is in the template
+            if (featureType == element.featureType &&
+                elementType == element.elementType) {
+                elementExists = true;
+                element.stylers.forEach(function(style) {
+                  propertyExists = true;
+                  if (Object.prototype.hasOwnProperty.call(style, attr)) {
+                    style[attr] = val;
+                  }
+                });
+                if (!propertyExists) {
+                  const newStyle = {};
+                  newStyle[attr] = val;
+                  element.stylers.push(newStyle);
+                }
+              }
+            });
+            if (!elementExists) {
+              // if the element is not in the tempalte
+              const newElement = {
+                'stylers': [
+                  {},
+                ],
+              };
+              newElement.stylers[0][attr] = val;
+              if (featureType) {
+                newElement['featureType'] = featureType;
+              }
+              if (elementType) {
+                newElement['elementType'] = elementType;
+              }
+              template.push(newElement);
+            }
+          return template;
+        }
     </script>
 </body>
 
@@ -48,5 +130,10 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
+}
+
+.menu{
+  z-index: 9;
+  position: absolute;
 }
 </style>
