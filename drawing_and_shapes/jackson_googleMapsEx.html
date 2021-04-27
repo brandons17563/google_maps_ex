@@ -21,7 +21,7 @@
       // https://developers.google.com/maps/documentation/javascript/drawinglayer
       const drawingManager = new google.maps.drawing.DrawingManager({
        // drawingMode: google.maps.drawing.OverlayType.MARKER, --> sets first tool up
-        drawingControl: false, // changing to false will hide the menu
+        drawingControl: true, // changing to false will hide the menu
         drawingControlOptions: {
           position: google.maps.ControlPosition.TOP_CENTER, // location on screen
           drawingModes: [ // which tools you want available
