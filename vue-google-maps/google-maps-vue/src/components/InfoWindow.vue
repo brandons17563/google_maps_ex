@@ -12,7 +12,7 @@
         required: true
       },
       lng: {
-        type: Number
+        type: Number,
         required: true
       }
     },
