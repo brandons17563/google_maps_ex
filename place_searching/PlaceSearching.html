@@ -7,14 +7,15 @@
     ></script>
 </head>
 <body>
-    <input type="text" id="autocomplete"></input>
+    <input type="text" id="autocomplete" size="55"></input>
     <div id="map"></div>
     <script>
         let map;
         var nyc;
         var mcdon_circles = [];
     function initMap() {
-      nyc = new google.maps.LatLng(40.713814570931376, -74.00141122412474);//set our current position.
+      nyc = new google.maps.LatLng(40.713814570931376, -74.00141122412474);
+      //set our current position.
      
       var options = {
         center: nyc,
@@ -25,32 +26,35 @@
       options.gestureHandling = 'greedy'
       map = new google.maps.Map(document.getElementById("map"), options);
 
-      //searching part.
+      //My part.
       let input = document.getElementById("autocomplete");
       //autocomplete.
       var autocomplete = new google.maps.places.Autocomplete(input,
       {
-        bounds: new google.maps.LatLngBounds(nyc) //change searching range to new york.
+        bounds: new google.maps.LatLngBounds(nyc) //change searching range to new york city.
       }
       );
       var service = new google.maps.places.PlacesService(document.createElement('div'));
 
+      //Searching part.
       google.maps.event.addListener(autocomplete,'place_changed',function()
         {
             var near_place=autocomplete.getPlace();
-            if(near_place.hasOwnProperty('place_id'))//specific item
+            //selected a specific item
+            if(near_place.hasOwnProperty('place_id'))
             {
                 //result([near_place]); //pass to jackson.
                 console.log(near_place);
             }
-            else{//group searching
+            else{
+              //we do group search(a list of results).
                 let request = {
                   query:near_place.name,
                   fields: ["name", "geometry"],
-                  location: nyc, // Lower Manhattan
-                  radius: 6000
+                  location: nyc, // The center of the search scope.
+                  radius: 6000 //The radius.
                 }
-                service.textSearch(request, function(results, status) {//its the name we type
+                service.textSearch(request, function(results, status) {//it's the name we type
                 if (status === google.maps.places.PlacesServiceStatus.OK) {
                     //result(results); //pass it to Jackson
                     console.log(results);
