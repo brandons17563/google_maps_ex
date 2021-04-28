@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8" />
     <script
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5u7uuBJOaYUXvQtyEMYuBgSplv0KO418&callback=initMap&libraries=&v=weekly"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5u7uuBJOaYUXvQtyEMYuBgSplv0KO418&callback=initMap&libraries=geocoder,places&v=weekly"
       async
     ></script>
 </head>
@@ -12,26 +12,99 @@
     <script>
         let map;
 
+        //Creates button that shows all of the mcdonalds in New York
+
+        function ImLovingIt(controlDiv, map, service) {
+            const controlUI = document.createElement("div");
+            controlUI.style.backgroundColor = "#DA291C";
+            controlUI.style.border = "2px solid #DA291C";
+            controlUI.style.borderRadius = "3px";
+            controlUI.style.boxShadow = "0 2px 6px rgba(0,0,0,.3)";
+            controlUI.style.cursor = "pointer";
+            controlUI.style.marginTop = "8px";
+            controlUI.style.marginBottom = "22px";
+            controlUI.style.textAlign = "center";
+            controlUI.title = "Click to show all mcdonalds in New York";
+            controlDiv.appendChild(controlUI);
+
+            const controlText = document.createElement("div");
+            controlText.style.color = "#FFC72C";
+            controlText.style.fontFamily = "Roboto,Arial,sans-serif";
+            controlText.style.fontSize = "16px";
+            controlText.style.lineHeight = "38px";
+            controlText.style.paddingLeft = "5px";
+            controlText.style.paddingRight = "5px";
+            controlText.innerHTML = "I'm Lovin' It";
+            controlUI.appendChild(controlText);
+
+            
+
+            controlUI.addEventListener("click", () => {
+                const mcdonalds = "McDonalds";
+                const new_york = {lat: 40.7128,lng:-73.983};
+                
+                var request = {
+                    query: mcdonalds,
+                    location: new_york,
+                    // radius: 6000,
+                };
+                service.textSearch(request, callback);
+
+                function createMarker(place) {
+                    const geocoder = new google.maps.Geocoder();
+                    const marker = new google.maps.Marker({map: map});
+
+                    geocoder.geocode({placeId: place.place_id },(results, status) => {
+                        if (status !== "OK" && results) {
+                            window.alert("Geocoder failed due to: " + status);
+                            return;
+                        }
+                        marker.setPlace({
+                            placeId: place.place_id,
+                            location: results[0].geometry.location,
+                        });
+                        marker.setVisible(true);
+                    });
+                  
+                }
+
+                function callback(results, status) {
+                    if(status == google.maps.places.PlacesServiceStatus.OK) {
+                        for (var i = 0; i < results.length; i++) {
+                            console.log(results[i]);
+                            var place = results[i];
+                            createMarker(results[i]);
+                        }
+                    }
+                }
+            });
+        }
+
     function initMap() {
         map = new google.maps.Map(document.getElementById("map"), {
         center: { lat: 40.76, lng: -73.983  },
         zoom: 8,
+        disableDefaultUI: true,
         
-        fullscreenControl: true,
-        streetViewControl: true,
-        rotateControl: true,
-        scaleControl: true,
-        mapTypeControl: true,
-        mapTypeControlOptions: {
-            style: google.maps.MapTypeControlStyle.DEFAULT,
-            position: google.maps.ControlPosition.TOP_CENTER,
-        },
-        zoomControl: true,
-        zoomControlOptions: {
-            position: google.maps.ControlPosition.LEFT_CENTER,
-        }
+        // fullscreenControl: true,
+        // streetViewControl: true,
+        // rotateControl: true,
+        // scaleControl: true,
+        // mapTypeControl: true,
+        // mapTypeControlOptions: {
+        //     style: google.maps.MapTypeControlStyle.DEFAULT,
+        //     position: google.maps.ControlPosition.TOP_CENTER,
+        // },
+        // zoomControl: true,
+        // zoomControlOptions: {
+        //     position: google.maps.ControlPosition.LEFT_CENTER,
+        // }
         
         });
+        var service = new google.maps.places.PlacesService(map);
+        const centerControlDiv = document.createElement("div");
+        ImLovingIt(centerControlDiv, map, service);
+        map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
     }
     </script>
 </body>
