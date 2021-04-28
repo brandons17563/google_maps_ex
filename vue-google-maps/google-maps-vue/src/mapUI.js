@@ -111,7 +111,7 @@ const addSidebarToggle = (controlDiv) => {
   controlText.style.lineHeight = '38px';
   controlText.style.paddingLeft = '5px';
   controlText.style.paddingRight = '5px';
-  controlText.innerHTML = '<i class="fas fa-bars"></i>';
+  controlText.innerHTML = 'Toggle';
   controlUI.appendChild(controlText);
   return;
 
