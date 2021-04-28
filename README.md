@@ -1,6 +1,6 @@
 # Advanced Google Map API
 ## Team Codex, Spring 2021
-blah blah blah
+Presentation on using the Google Maps Libraries and incorporating the into Vue
 
 ## Useful Documentation
 ### Drawing and Shapes
