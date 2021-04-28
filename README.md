@@ -10,4 +10,4 @@ blah blah blah
 [Markers](https://developers.google.com/maps/documentation/javascript/reference/marker)  
 
 
-[Using Google Maps with Vue] (https://xon5.medium.com/vue-google-maps-c16da293c71)
+[Using Google Maps with Vue](https://xon5.medium.com/vue-google-maps-c16da293c71)
